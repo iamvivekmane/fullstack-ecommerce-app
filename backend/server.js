@@ -3,6 +3,8 @@ const app = express()
 const connectDB = require('./config/db')
 require('dotenv').config();
 
+app.use(express.json())
+app.use('/api/auth', require('./routes/auth'))
 connectDB()
 
 app.get('/', (req, res) => {
@@ -10,6 +12,7 @@ app.get('/', (req, res) => {
 })
 
 const PORT = process.env.PORT || 5000
+
 
 app.listen(PORT, () => {
     console.log(`Ecommerce app listening on port ${PORT}`)
