@@ -5,6 +5,7 @@ const { body, validationResult } = require('express-validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const JWT_SECRET = process.env.JWT_SECRET
+const fetchuser = require('../middleware/fetchuser')
 
 
 // Route 1
@@ -107,11 +108,22 @@ router.post('/login', [
         console.log("this issue")
         res.status(500).send("Internal server error");
     }
-
-
 })
 
-
+// Route 3
+// Get loggedin user details using POST : api/auth/getuser : login required
+router.post('/getuser', [
+    body('email', 'email is not valid').isEmail(),
+    body('password', 'password cannot be blank').exists()
+], fetchuser, async (req, res) => {
+    try {
+        userId = req.user.id;
+        const user = await User.findById(userId).select("-password");
+        res.send(user)
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
 
 
 module.exports = router;
