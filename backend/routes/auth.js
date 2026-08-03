@@ -66,50 +66,7 @@ router.post('/signup', [
 })
 
 
-// Route 2
-// Authenticate a user using POST : api/auth/login : No login required
-router.post('/login', [
-    body('email', 'email is not valid').isEmail(),
-    body('password', 'password cannot be blank').exists()
 
-], async (req, res) => {
-    let success = false;
-    // If there are errors return bad request and the errors
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        console.log("Thiks is getting called")
-        return res.status(400).json({ errors: result.array() });
-    }
-    const { email, password } = req.body;
-    try {
-        let user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ success, error: 'Login with correct credentials' })
-        }
-
-        const passwordCompare = await bcrypt.compare(password, user.password)
-        if (!passwordCompare) {
-            return res.status(400).json({ success, error: 'Login with correct credentials' })
-        }
-
-        const data = {
-            user: {
-                id: user.id
-            }
-        }
-        const authtoken = jwt.sign(data, JWT_SECRET)
-        success = true;
-        //Send the user as responese if created successully
-        res.json({ success, authtoken })
-
-
-    } catch (error) {
-        console.log("this issue")
-        res.status(500).send("Internal server error");
-    }
-
-
-})
 
 
 
