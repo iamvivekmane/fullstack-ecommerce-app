@@ -62,5 +62,26 @@ router.post('/createproduct', [
 
 
 
+router.get('/getproducts', [
+], async (req, res) => {
+    let success = false;
+
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        console.log("getting")
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+        let product = await Product.find();
+        success = true;
+        res.json({ success, product })
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
+
+
+
 
 module.exports = router;
