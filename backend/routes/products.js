@@ -4,6 +4,8 @@ const Product = require('../models/Product');
 const router = express.Router()
 const { body, validationResult } = require('express-validator')
 
+
+// Creates a new product
 router.post('/createproduct', [
     body('name', 'name is not valid').isLength({ min: 3 }),
     body('slug', 'slug is not valid').isLength(3),
@@ -33,7 +35,6 @@ router.post('/createproduct', [
         }
 
         //Creates a new product
-        console.log(req.body)
         product = await Product.create({
             name: req.body.name,
             slug: req.body.slug,
@@ -61,7 +62,7 @@ router.post('/createproduct', [
 })
 
 
-
+// Returns list of all the products 
 router.get('/getproducts', [
 ], async (req, res) => {
     let success = false;
@@ -72,9 +73,32 @@ router.get('/getproducts', [
         return res.status(400).json({ errors: result.array() });
     }
     try {
-        let product = await Product.find();
+        let products = await Product.find({ brand: brand });
         success = true;
-        res.json({ success, product })
+        res.json({ products })
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
+
+
+// Returns the product with the id
+router.get('/getproducts/:id', [
+], async (req, res) => {
+    let success = false;
+
+    let id = req.params.id;
+    console.log(id);
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        console.log("getting")
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+        let products = await Product.find({ _id: id });
+        success = true;
+        res.json({ products })
         //Catches the error
     } catch (error) {
         res.status(500).send("Internal server error");
