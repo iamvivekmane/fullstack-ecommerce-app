@@ -5,8 +5,8 @@ const router = express.Router()
 const { body, validationResult } = require('express-validator')
 
 
-// Creates a new product
-router.post('/createproduct', [
+// Create a new product
+router.post('/', [
     body('name', 'name is not valid').isLength({ min: 3 }),
     body('slug', 'slug is not valid').isLength(3),
     body('description', 'description is not valid').isLength(3),
@@ -34,7 +34,7 @@ router.post('/createproduct', [
             return res.status(400).json({ success, error: "sorry this slug exist already" })
         }
 
-        //Creates a new product
+        //Creates a new product in database
         product = await Product.create({
             name: req.body.name,
             slug: req.body.slug,
@@ -62,8 +62,8 @@ router.post('/createproduct', [
 })
 
 
-// Returns list of all the products 
-router.get('/getproducts', [
+// Get all the products
+router.get('/', [
 ], async (req, res) => {
     let success = false;
 
@@ -83,8 +83,8 @@ router.get('/getproducts', [
 })
 
 
-// Returns the product with the id
-router.get('/getproducts/:id', [
+// Get the product with the id
+router.get('/:id', [
 ], async (req, res) => {
     let success = false;
 
@@ -106,8 +106,8 @@ router.get('/getproducts/:id', [
 })
 
 
-// Updates the product with the id
-router.put('/updateproduct/:id', [
+// Update the product with the id
+router.put('/:id', [
     body('name', 'name is not valid').isLength({ min: 3 }),
     body('slug', 'slug is not valid').isLength(3),
     body('description', 'description is not valid').isLength(3),
@@ -153,11 +153,5 @@ router.put('/updateproduct/:id', [
         res.status(500).send("Internal server error");
     }
 })
-
-
-
-
-
-
 
 module.exports = router;
