@@ -84,7 +84,6 @@ router.get('/', [
 router.get('/:id', [
 ], async (req, res) => {
     let success = false;
-
     let id = req.params.id;
     const result = validationResult(req);
     if (!result.isEmpty()) {
@@ -163,5 +162,27 @@ router.delete('/:id', [
         res.status(500).send("Internal server error");
     }
 })
+
+
+// Get all the products
+router.get('/featured', [
+], async (req, res) => {
+    console.log("hello");
+    let success = false;
+
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+        let products = await Product.find();
+        success = true;
+        res.json({ products })
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
+
 
 module.exports = router;
