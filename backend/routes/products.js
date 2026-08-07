@@ -23,7 +23,6 @@ router.post('/', [
     // If there are errors return bad request and the errors
     const result = validationResult(req);
     if (!result.isEmpty()) {
-        console.log("getting")
         return res.status(400).json({ errors: result.array() });
     }
     try {
@@ -48,7 +47,6 @@ router.post('/', [
             isFeatured: req.body.isFeatured,
             ratings: req.body.ratings,
         });
-        console.log(req.body)
         const slug = product.slug;
         success = true;
 
@@ -69,7 +67,6 @@ router.get('/', [
 
     const result = validationResult(req);
     if (!result.isEmpty()) {
-        console.log("getting")
         return res.status(400).json({ errors: result.array() });
     }
     try {
@@ -89,10 +86,8 @@ router.get('/:id', [
     let success = false;
 
     let id = req.params.id;
-    console.log(id);
     const result = validationResult(req);
     if (!result.isEmpty()) {
-        console.log("getting")
         return res.status(400).json({ errors: result.array() });
     }
     try {
@@ -120,14 +115,9 @@ router.put('/:id', [
     body('ratings', 'ratings is not valid').isLength(3),
 ], async (req, res) => {
     let success = false;
-
     let id = req.params.id;
-
-    console.log(id);
-    console.log(req.body);
     const result = validationResult(req);
     if (!result.isEmpty()) {
-        console.log("getting")
         return res.status(400).json({ errors: result.array() });
     }
     try {
@@ -146,6 +136,26 @@ router.put('/:id', [
                 ratings: req.body.ratings
             }
         });
+        success = true;
+        res.json({ product })
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
+
+
+// Delete the product with the id
+router.delete('/:id', [
+], async (req, res) => {
+    let success = false;
+    let id = req.params.id;
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+        let product = await Product.deleteOne({ _id: id });
         success = true;
         res.json({ product })
         //Catches the error
