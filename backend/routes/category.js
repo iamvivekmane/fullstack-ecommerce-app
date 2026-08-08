@@ -1,6 +1,5 @@
 const express = require('express');
 const User = require('../models/User');
-const category = require('../models/category');
 const router = express.Router()
 const { body, validationResult } = require('express-validator');
 const Category = require('../models/Category');
@@ -47,7 +46,6 @@ router.post('/', [
     }
 })
 
-
 // Get all the categories
 router.get('/', [
 ], async (req, res) => {
@@ -62,6 +60,30 @@ router.get('/', [
         // Get all the categories
         category = await Category.find();
         success = true;
+
+        //Send the data
+        res.json({ category })
+
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
+
+// Get category with the id
+router.get('/:id', [
+], async (req, res) => {
+
+    // If there are errors return bad request and the errors
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+        let id = req.params.id;
+
+        // Get category with the id
+        let category = await Category.findById(id);
 
         //Send the data
         res.json({ category })
