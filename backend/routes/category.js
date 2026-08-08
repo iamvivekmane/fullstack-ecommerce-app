@@ -1,0 +1,53 @@
+const express = require('express');
+const User = require('../models/User');
+const Product = require('../models/Product');
+const router = express.Router()
+const { body, validationResult } = require('express-validator');
+const Category = require('../models/Category');
+
+
+// Create a new product
+router.post('/', [
+    body('name', 'name is not valid').isLength({ min: 3 }),
+    body('slug', 'slug is not valid').isLength(3),
+    body('parent_category_id', 'parent category do not exist').isLength(3),
+    body('image', 'images is not valid').isLength(3),
+], async (req, res) => {
+    let success = false;
+
+    // If there are errors return bad request and the errors
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+
+        //Check wheather the slug already exists
+        let category = await Category.findOne({ name: req.body.name })
+        let slug = await Category.findOne({ slug: req.body.slug });
+
+        if (category) {
+            return res.status(400).json({ success, error: "sorry this name exist already" })
+        }
+        else if (slug) {
+            return res.status(400).json({ success, error: "sorry this slug exist already" })
+        }
+
+        //Creates a new product in database
+        category = await Category.create({ name: req.body.name, slug: req.body.slug, parent_category_id: req.body.parent_category_id, image: req.body.image });
+        success = true;
+
+        //Send the status and inserted data as responese if created successully
+        res.json({ success, category })
+
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
+
+
+
+
+
+module.exports = router;
