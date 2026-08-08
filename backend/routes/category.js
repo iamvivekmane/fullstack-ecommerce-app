@@ -1,12 +1,12 @@
 const express = require('express');
 const User = require('../models/User');
-const Product = require('../models/Product');
+const category = require('../models/category');
 const router = express.Router()
 const { body, validationResult } = require('express-validator');
 const Category = require('../models/Category');
 
 
-// Create a new product
+// Create a new category 
 router.post('/', [
     body('name', 'name is not valid').isLength({ min: 3 }),
     body('slug', 'slug is not valid').isLength(3),
@@ -22,18 +22,19 @@ router.post('/', [
     }
     try {
 
-        //Check wheather the slug already exists
         let category = await Category.findOne({ name: req.body.name })
         let slug = await Category.findOne({ slug: req.body.slug });
 
+        //Check wheather the name already exists
         if (category) {
             return res.status(400).json({ success, error: "sorry this name exist already" })
         }
+        //Check wheather the slug already exists
         else if (slug) {
             return res.status(400).json({ success, error: "sorry this slug exist already" })
         }
 
-        //Creates a new product in database
+        //Creates a new category in database
         category = await Category.create({ name: req.body.name, slug: req.body.slug, parent_category_id: req.body.parent_category_id, image: req.body.image });
         success = true;
 
@@ -47,7 +48,29 @@ router.post('/', [
 })
 
 
+// Get all the categories
+router.get('/', [
+], async (req, res) => {
+    let success = false;
 
+    // If there are errors return bad request and the errors
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+        // Get all the categories
+        category = await Category.find();
+        success = true;
+
+        //Send the data
+        res.json({ category })
+
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
 
 
 module.exports = router;
