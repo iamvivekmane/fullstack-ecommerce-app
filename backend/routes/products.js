@@ -59,7 +59,6 @@ router.post('/', [
     }
 })
 
-
 // Get all the products
 router.get('/', [
 ], async (req, res) => {
@@ -79,6 +78,24 @@ router.get('/', [
     }
 })
 
+// Get all the featured products
+router.get('/featured', [
+], async (req, res) => {
+    let success = false;
+
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+        let products = await Product.find({ isFeatured: true });
+        success = true;
+        res.json({ products })
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
 
 // Get the product with the id
 router.get('/:id', [
@@ -98,7 +115,6 @@ router.get('/:id', [
         res.status(500).send("Internal server error");
     }
 })
-
 
 // Update the product with the id
 router.put('/:id', [
@@ -143,7 +159,6 @@ router.put('/:id', [
     }
 })
 
-
 // Delete the product with the id
 router.delete('/:id', [
 ], async (req, res) => {
@@ -164,25 +179,7 @@ router.delete('/:id', [
 })
 
 
-// Get all the products
-router.get('/featured', [
-], async (req, res) => {
-    console.log("hello");
-    let success = false;
 
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        return res.status(400).json({ errors: result.array() });
-    }
-    try {
-        let products = await Product.find();
-        success = true;
-        res.json({ products })
-        //Catches the error
-    } catch (error) {
-        res.status(500).send("Internal server error");
-    }
-})
 
 
 module.exports = router;
