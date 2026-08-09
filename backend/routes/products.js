@@ -7,16 +7,16 @@ const { body, validationResult } = require('express-validator')
 
 // Create a new product
 router.post('/', [
-    body('name', 'name is not valid').isLength({ min: 3 }),
-    body('slug', 'slug is not valid').isLength(3),
-    body('description', 'description is not valid').isLength(3),
-    body('price', 'price is not valid').isLength(1),
-    body('discountPrice', 'price is not valid').isLength(1),
-    body('brand', 'brand is not valid').isLength(1),
-    body('stock', 'stock is not valid').isLength(1),
-    body('images', 'images is not valid').isLength(3),
-    body('isFeatured', 'images is not valid').isBoolean(),
-    body('ratings', 'ratings is not valid').isLength(3),
+    body('name', 'name must be at least 3 characters').isLength({ min: 3 }),
+    body('slug', 'slug must be at least 3 characters').isLength({ min: 3 }),
+    body('description', 'description must be at least 3 characters').isLength({ min: 3 }),
+    body('price', 'price must be a positive number').isFloat({ min: 0 }),
+    body('discountPrice', 'discount price must be a positive number').isFloat({ min: 0 }),
+    body('category', 'category must be a valid ID').isMongoId(),
+    body('brand', 'brand must be at least 2 characters').isLength({ min: 2 }),
+    body('stock', 'stock must be a non-negative integer').isInt({ min: 0 }),
+    body('images', 'images must be an array with at least one image').isArray({ min: 1 }),
+    body('isFeatured', 'isFeatured must be true or false').isBoolean(),
 ], async (req, res) => {
     let success = false;
 
@@ -118,16 +118,16 @@ router.get('/:id', [
 
 // Update the product with the id
 router.put('/:id', [
-    body('name', 'name is not valid').isLength({ min: 3 }),
-    body('slug', 'slug is not valid').isLength(3),
-    body('description', 'description is not valid').isLength(3),
-    body('price', 'price is not valid').isLength(1),
-    body('discountPrice', 'price is not valid').isLength(1),
-    body('brand', 'brand is not valid').isLength(1),
-    body('stock', 'stock is not valid').isLength(1),
-    body('images', 'images is not valid').isLength(3),
-    body('isFeatured', 'images is not valid').isBoolean(),
-    body('ratings', 'ratings is not valid').isLength(3),
+    body('name', 'name must be at least 3 characters').isLength({ min: 3 }),
+    body('slug', 'slug must be at least 3 characters').isLength({ min: 3 }),
+    body('description', 'description must be at least 3 characters').isLength({ min: 3 }),
+    body('price', 'price must be a positive number').isFloat({ min: 0 }),
+    body('discountPrice', 'discount price must be a positive number').isFloat({ min: 0 }),
+    body('category', 'category must be a valid ID').isMongoId(),
+    body('brand', 'brand must be at least 2 characters').isLength({ min: 2 }),
+    body('stock', 'stock must be a non-negative integer').isInt({ min: 0 }),
+    body('images', 'images must be an array with at least one image').isArray({ min: 1 }),
+    body('isFeatured', 'isFeatured must be true or false').isBoolean(),
 ], async (req, res) => {
     let success = false;
     let id = req.params.id;
