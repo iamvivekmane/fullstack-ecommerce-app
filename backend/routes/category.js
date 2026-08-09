@@ -94,5 +94,46 @@ router.get('/:id', [
     }
 })
 
+// Update category with the id
+router.put('/:id', [
+    body('name', 'name is not valid').isLength({ min: 3 }),
+    body('slug', 'slug is not valid').isLength(3),
+    body('parent_category_id', 'parent category do not exist').isLength(3),
+    body('image', 'images is not valid').isLength(3),
+], async (req, res) => {
+    console.log("Executing");
+
+    // If there are errors return bad request and the errors
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+
+        let id = req.params.id;
+        console.log(req.body);
+        let name = await Category.findOne({ name: req.body.name })
+        let slug = await Category.findOne({ slug: req.body.slug });
+        console.log(id);
+
+        //Check wheather the name already exists
+        if (name) {
+            return res.status(400).json({ success, error: "sorry this name exist already" })
+        }
+        //Check wheather the slug already exists
+        else if (slug) {
+            return res.status(400).json({ success, error: "sorry this slug exist already" })
+        }
+        // Get category with the id
+        let category = await Category.updateOne({ _id: id }, { $set: { name: req.body.name, slug: req.body.slug, parent_category_id: req.body.parent_category_id, image: req.body.image } });
+
+        //Send the data
+        res.json({ category })
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
+
 
 module.exports = router;
