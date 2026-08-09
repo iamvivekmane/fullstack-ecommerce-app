@@ -135,5 +135,26 @@ router.put('/:id', [
     }
 })
 
+// Delete category with the id
+router.delete('/:id', [
+], async (req, res) => {
+    // If there are errors return bad request and the errors
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+        let success = false;
+        let id = req.params.id;
+        // Get category with the id
+        let category = await Category.findByIdAndDelete(id)
+        success = true;
+        //Send the data
+        res.json({ success, category })
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
 
 module.exports = router;
