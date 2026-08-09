@@ -7,10 +7,10 @@ const Category = require('../models/Category');
 
 // Create a new category 
 router.post('/', [
-    body('name', 'name is not valid').isLength({ min: 3 }),
-    body('slug', 'slug is not valid').isLength(3),
-    body('parent_category_id', 'parent category do not exist').isLength(3),
-    body('image', 'images is not valid').isLength(3),
+    body('name', 'name must be at least 3 characters').isLength({ min: 3 }),
+    body('slug', 'slug must be at least 3 characters').isLength({ min: 3 }),
+    body('parent_category_id', 'parent category id is not a valid ID').optional().isMongoId(),
+    body('image', 'image must be a valid URL').isURL(),
 ], async (req, res) => {
     let success = false;
 
@@ -96,10 +96,10 @@ router.get('/:id', [
 
 // Update category with the id
 router.put('/:id', [
-    body('name', 'name is not valid').isLength({ min: 3 }),
-    body('slug', 'slug is not valid').isLength(3),
-    body('parent_category_id', 'parent category do not exist').isLength(3),
-    body('image', 'images is not valid').isLength(3),
+    body('name', 'name must be at least 3 characters').isLength({ min: 3 }),
+    body('slug', 'slug must be at least 3 characters').isLength({ min: 3 }),
+    body('parent_category_id', 'parent category id is not a valid ID').optional().isMongoId(),
+    body('image', 'image must be a valid URL').isURL(),
 ], async (req, res) => {
     console.log("Executing");
 
