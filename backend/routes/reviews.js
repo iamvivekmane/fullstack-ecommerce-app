@@ -60,7 +60,8 @@ router.get('/:productid', [
     }
 })
 
-// Get all the featured products
+
+// Update review with the id
 router.put('/:id', [
     body('rating', 'Rating must be between 1 and 5').isInt({ min: 1, max: 5 }),
     body('comment', 'Comment must be at least 3 characters').trim().isLength({ min: 3 }).escape(),
@@ -85,6 +86,28 @@ router.put('/:id', [
     }
 })
 
+
+// Delete review with the id
+router.delete('/:id', [
+], async (req, res) => {
+    let success = false;
+
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+
+    let reviewId = req.params.id;
+    console.log(reviewId);
+    try {
+        let review = await Review.deleteOne({ _id: reviewId });
+        success = true;
+        res.json({ success, review })
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
 
 
 module.exports = router;
