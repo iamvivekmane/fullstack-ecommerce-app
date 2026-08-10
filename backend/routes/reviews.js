@@ -39,6 +39,26 @@ router.post('/', [
     }
 })
 
+// Get all the reviews of a product
+router.get('/:productid', [
+], async (req, res) => {
+    let success = false;
+
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+
+    let productId = req.params.productid;
+    try {
+        let review = await Review.find({ product: productId });
+        success = true;
+        res.json({ success, review })
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
 
 
 
