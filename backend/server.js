@@ -7,6 +7,7 @@ app.use(express.json())
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/products', require('./routes/products'))
 app.use('/api/category', require('./routes/category'))
+app.use('/api/reviews', require('./routes/reviews'))
 connectDB()
 
 app.get('/', (req, res) => {
