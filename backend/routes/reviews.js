@@ -60,6 +60,30 @@ router.get('/:productid', [
     }
 })
 
+// Get all the featured products
+router.put('/:id', [
+    body('rating', 'Rating must be between 1 and 5').isInt({ min: 1, max: 5 }),
+    body('comment', 'Comment must be at least 3 characters').trim().isLength({ min: 3 }).escape(),
+], async (req, res) => {
+    console.log("hello");
+    let success = false;
+
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+
+    let reviewId = req.params.id;
+    console.log(reviewId);
+    try {
+        let review = await Review.updateOne({ _id: reviewId }, { $set: { rating: req.body.rating, comment: req.body.comment } });
+        success = true;
+        res.json({ success, review })
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
 
 
 
