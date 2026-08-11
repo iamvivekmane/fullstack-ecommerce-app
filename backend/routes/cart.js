@@ -9,7 +9,7 @@ const fetchuser = require('../middleware/fetchuser')
 
 
 // Route 1
-// Creating a user using POST : api/auth/signup : No login required
+// Adding item to the cart
 router.post('/', [
     body('user', 'User ID must be a valid MongoDB ID').isMongoId(),
     body('items', 'Items array is required').isArray({ min: 1 }),
@@ -30,6 +30,32 @@ router.post('/', [
             user: req.body.user,
             items: req.body.items
         });
+
+        success = true;
+
+        //Send the user as responese if created successully
+        res.json({ success, cart })
+
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
+
+// Route 2
+// Getting all the items from the cart
+router.get('/', [
+], async (req, res) => {
+    let success = false;
+
+    // If there are errors return bad request and the errors
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+        //Creates a new cart
+        let cart = await Cart.find({});
 
         success = true;
 
