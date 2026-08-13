@@ -8,8 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET
 const fetchuser = require('../middleware/fetchuser')
 
 
-// Route 1
-// Adding item to the cart
+// Route 1: Add items to the cart
 router.post('/', [
     body('user', 'User ID must be a valid MongoDB ID').isMongoId(),
     body('items', 'Items array is required').isArray({ min: 1 }),
@@ -19,13 +18,13 @@ router.post('/', [
 ], async (req, res) => {
     let success = false;
 
-    // If there are errors return bad request and the errors
+    // Validate request
     const result = validationResult(req);
     if (!result.isEmpty()) {
         return res.status(400).json({ errors: result.array() });
     }
     try {
-        //Creates a new cart
+        // Create a new cart with provided data
         let cart = await Cart.create({
             user: req.body.user,
             items: req.body.items
@@ -33,114 +32,113 @@ router.post('/', [
 
         success = true;
 
-        //Send the user as responese if created successully
+        // Return cart if created successfully
         res.json({ success, cart })
 
-        //Catches the error
+        // Catch and handle errors
     } catch (error) {
         res.status(500).send("Internal server error");
     }
 })
 
-// Route 2
-// Getting all the items from the cart
+// Route 2: Get all items from the cart
 router.get('/', [
 ], async (req, res) => {
     let success = false;
 
-    // If there are errors return bad request and the errors
+    // Validate request
     const result = validationResult(req);
     if (!result.isEmpty()) {
         return res.status(400).json({ errors: result.array() });
     }
     try {
-        //Creates a new cart
+        // Fetch all carts from database
         let cart = await Cart.find({});
 
         success = true;
 
-        //Send the user as responese if created successully
+        // Return carts if fetched successfully
         res.json({ success, cart })
 
-        //Catches the error
+        // Catch and handle errors
     } catch (error) {
         res.status(500).send("Internal server error");
     }
 })
 
-// Route 3
-// Updating the quantity of items in the cart
+// Route 3: Update item quantity in the cart
 router.put('/:productid', [
     body('quantity', 'Quantity must be a positive number').isInt({ min: 1 })
 ], async (req, res) => {
     let success = false;
     let id = req.params.productid;
-    // If there are errors return bad request and the errors
+
+    // Validate request
     const result = validationResult(req);
     if (!result.isEmpty()) {
         return res.status(400).json({ errors: result.array() });
     }
     try {
-        //Updates the quantity in the cart
+        // Update the quantity for the specified product in cart
         let cart = await Cart.updateOne({ "items.product": id }, { $set: { "items.$.quantity": req.body.quantity } }, { new: true });
         console.log(id);
 
         success = true;
 
-        //Send the user as responese if created successully
+        // Return updated cart if successful
         res.json({ success, cart })
 
-        //Catches the error
+        // Catch and handle errors
     } catch (error) {
         res.status(500).send("Internal server error");
     }
 })
 
-// Route 4
-// Deleting the product from the cart
+// Route 4: Remove product from the cart
 router.delete('/:productid', [
 ], async (req, res) => {
     let success = false;
     let id = req.params.productid;
-    // If there are errors return bad request and the errors
+
+    // Validate request
     const result = validationResult(req);
     if (!result.isEmpty()) {
         return res.status(400).json({ errors: result.array() });
     }
     try {
-        //Remove the item from the cart
+        // Remove the specified product from cart
         let cart = await Cart.updateOne({ "items.product": id }, { $pull: { items: { product: id } } })
 
         success = true;
 
-        //Send the user as responese if created successully
+        // Return result if deletion successful
         res.json({ success, cart })
 
-        //Catches the error
+        // Catch and handle errors
     } catch (error) {
         res.status(500).send("Internal server error");
     }
 })
 
-// Route 4
-// Deleting the product from the cart
+// Route 5: Clear entire cart
 router.delete('/', [
 ], async (req, res) => {
     let success = false;
-    // If there are errors return bad request and the errors
+
+    // Validate request
     const result = validationResult(req);
     if (!result.isEmpty()) {
         return res.status(400).json({ errors: result.array() });
     }
     try {
-        //Remove the item from the cart
+        // Delete entire cart from database
         let cart = await Cart.deleteOne()
         success = true;
 
-        //Send the user as responese if created successully
+        // Return result if deletion successful
         res.json({ success, cart })
 
-        //Catches the error
+        // Catch and handle errors
     } catch (error) {
         res.status(500).send("Internal server error");
     }
