@@ -9,6 +9,7 @@ app.use('/api/products', require('./routes/products'))
 app.use('/api/category', require('./routes/category'))
 app.use('/api/reviews', require('./routes/reviews'))
 app.use('/api/cart', require('./routes/cart'))
+app.use('/api/order', require('./routes/order'))
 connectDB()
 
 app.get('/', (req, res) => {

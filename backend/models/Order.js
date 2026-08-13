@@ -6,7 +6,7 @@ const orderSchema = new mongoose.Schema({
         product: { type: mongoose.Schema.ObjectId, ref: 'Product' },
         name: { type: String, required: true },
         price: { type: Number, required: true },
-        quantity: { Type: Number, required: true, default: 1 }
+        quantity: { type: Number, default: 1 }
     }],
     shippingAddress: { street: { type: String }, city: { type: String }, state: { type: String }, zip: { type: String }, country: { type: String }, },
     paymentMethod: { type: String, default: 'razorpay' },
