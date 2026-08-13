@@ -68,11 +68,10 @@ router.get('/', [
     }
 })
 
-
-// Route 2
-// Getting all the items from the cart
+// Route 3
+// Updating the quantity of items in the cart
 router.put('/:productid', [
-    body('items.*.quantity', 'Quantity must be a positive number').isInt({ min: 1 })
+    body('quantity', 'Quantity must be a positive number').isInt({ min: 1 })
 ], async (req, res) => {
     let success = false;
     let id = req.params.productid;
@@ -82,8 +81,8 @@ router.put('/:productid', [
         return res.status(400).json({ errors: result.array() });
     }
     try {
-        //Creates a new cart
-        let cart = await Cart.updateOne({ "items.product": id }, { $set: { "items.$.quantity": req.body.items } }, { new: true });
+        //Updates the quantity in the cart
+        let cart = await Cart.updateOne({ "items.product": id }, { $set: { "items.$.quantity": req.body.quantity } }, { new: true });
         console.log(id);
 
         success = true;
