@@ -122,6 +122,29 @@ router.delete('/:productid', [
     }
 })
 
+// Route 4
+// Deleting the product from the cart
+router.delete('/', [
+], async (req, res) => {
+    let success = false;
+    // If there are errors return bad request and the errors
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+        //Remove the item from the cart
+        let cart = await Cart.deleteOne()
+        success = true;
+
+        //Send the user as responese if created successully
+        res.json({ success, cart })
+
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
 
 
 module.exports = router;
