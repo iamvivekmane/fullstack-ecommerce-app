@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs')
 const fetchuser = require('../middleware/fetchuser')
 
 
-// Route 1: Add items to the cart
+// Route 1: Add an order
 router.post('/', [
     body('user', 'User ID must be a valid MongoDB ID').isMongoId(),
     body('items', 'Items array is required').isArray({ min: 1 }),
@@ -31,7 +31,7 @@ router.post('/', [
         return res.status(400).json({ errors: result.array() });
     }
     try {
-        // Create a new cart with provided data
+        // Create a new order with provided data
         let order = await Order.create({
             user: req.body.user,
             items: req.body.items,
@@ -44,7 +44,29 @@ router.post('/', [
         console.log("helo");
         success = true;
 
-        // Return cart if created successfully
+        // Return order if created successfully
+        res.json({ success, order })
+        // Catch and handle errors
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
+
+// Route 2: Get all the orders
+router.get('/', [
+], async (req, res) => {
+    let success = false;
+    // Validate request
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+        // Get all order details
+        let order = await Order.find();
+        success = true;
+
+        // Return orders if successfully
         res.json({ success, order })
         // Catch and handle errors
     } catch (error) {
