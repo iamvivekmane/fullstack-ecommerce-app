@@ -5,7 +5,8 @@ const { body, validationResult } = require('express-validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const JWT_SECRET = process.env.JWT_SECRET
-const fetchuser = require('../middleware/fetchuser')
+const fetchuser = require('../middleware/fetchuser');
+const { findById } = require('../models/Order');
 
 
 // Route 1
@@ -40,6 +41,7 @@ router.post('/signup', [
 
         const salt = await bcrypt.genSalt(10);
         const secPassword = await bcrypt.hash(req.body.password, salt)
+
         //Creates a new user
         user = await User.create({
             name: req.body.name,
@@ -54,11 +56,13 @@ router.post('/signup', [
                 id: user.id
             }
         }
+        const createdUser = await User.findById(user.id);
         const authtoken = jwt.sign(data, JWT_SECRET)
+        const role = createdUser.role;
         success = true;
 
         //Send the user as responese if created successully
-        res.json({ success, authtoken })
+        res.json({ success, authtoken, role })
 
         //Catches the error
     } catch (error) {
@@ -98,10 +102,15 @@ router.post('/login', [
                 id: user.id
             }
         }
+
+
+        const createdUser = await User.findById(user.id);
         const authtoken = jwt.sign(data, JWT_SECRET)
+        const role = createdUser.role;
         success = true;
+
         //Send the user as responese if created successully
-        res.json({ success, authtoken })
+        res.json({ success, authtoken, role })
 
 
     } catch (error) {
