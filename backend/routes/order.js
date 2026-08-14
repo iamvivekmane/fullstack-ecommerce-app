@@ -97,6 +97,31 @@ router.get('/:id', [
     }
 })
 
+// Route 4: Update the status of order with the id
+router.put('/:id/status', [
+    body('orderStatus', 'Order status must be valid').isIn(['placed', 'processing', 'shipped', 'delivered', 'cancelled'])
+], async (req, res) => {
+    let success = false;
+    let id = req.params.id;
+    // Validate request
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+        // Update orderStatus of order with the id
+        let order = await Order.updateOne({ _id: id }, { $set: { orderStatus: req.body.orderStatus } });
+        console.log(req.body);
+        success = true;
+
+        // Return order if successfull
+        res.json({ success, order })
+        // Catch and handle errors
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
+
 
 
 
