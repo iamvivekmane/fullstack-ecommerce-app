@@ -74,6 +74,29 @@ router.get('/', [
     }
 })
 
+// Route 3: Get the details of order with the id
+router.get('/:id', [
+], async (req, res) => {
+    let success = false;
+    let id = req.params.id;
+    // Validate request
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+        // Get all order details
+        let order = await Order.findById(id);
+        success = true;
+
+        // Return order if successfully
+        res.json({ success, order })
+        // Catch and handle errors
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
+
 
 
 
