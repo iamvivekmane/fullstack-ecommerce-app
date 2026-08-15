@@ -149,8 +149,9 @@ router.delete('/:id', [
         // Get category with the id
         let category = await Category.findByIdAndDelete(id)
         success = true;
+        const message = "Category deleted successfully";
         //Send the data
-        res.json({ success, category })
+        res.json({ success, message })
         //Catches the error
     } catch (error) {
         res.status(500).send("Internal server error");
