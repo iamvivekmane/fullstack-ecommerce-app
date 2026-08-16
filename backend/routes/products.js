@@ -58,6 +58,24 @@ router.post('/', [
         res.status(500).send("Internal server error");
     }
 })
+// Get all the featured products
+router.get('/featured', [
+], async (req, res) => {
+    let success = false;
+
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+    try {
+        let products = await Product.find({ isFeatured: true });
+        success = true;
+        res.json({ products })
+        //Catches the error
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+})
 
 // Get all the products
 router.get('/', [
@@ -78,24 +96,6 @@ router.get('/', [
     }
 })
 
-// Get all the featured products
-router.get('/featured', [
-], async (req, res) => {
-    let success = false;
-
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        return res.status(400).json({ errors: result.array() });
-    }
-    try {
-        let products = await Product.find({ isFeatured: true });
-        success = true;
-        res.json({ products })
-        //Catches the error
-    } catch (error) {
-        res.status(500).send("Internal server error");
-    }
-})
 
 // Get the product with the id
 router.get('/:id', [
