@@ -12,7 +12,6 @@ router.post('/', [
     body('parent_category_id', 'parent category id is not a valid ID').optional().isMongoId(),
     body('image', 'image must be a valid URL').isURL(),
 ], async (req, res) => {
-    let success = false;
 
     // If there are errors return bad request and the errors
     const result = validationResult(req);
@@ -26,19 +25,18 @@ router.post('/', [
 
         //Check wheather the name already exists
         if (category) {
-            return res.status(400).json({ success, error: "sorry this name exist already" })
+            return res.status(400).json({ error: "sorry this name exist already" })
         }
         //Check wheather the slug already exists
         else if (slug) {
-            return res.status(400).json({ success, error: "sorry this slug exist already" })
+            return res.status(400).json({ error: "sorry this slug exist already" })
         }
 
         //Creates a new category in database
         category = await Category.create({ name: req.body.name, slug: req.body.slug, parent_category_id: req.body.parent_category_id, image: req.body.image });
-        success = true;
 
         //Send the status and inserted data as responese if created successully
-        res.json({ success, category })
+        res.json(category)
 
         //Catches the error
     } catch (error) {
@@ -49,7 +47,6 @@ router.post('/', [
 // Get all the categories
 router.get('/', [
 ], async (req, res) => {
-    let success = false;
 
     // If there are errors return bad request and the errors
     const result = validationResult(req);
@@ -58,11 +55,11 @@ router.get('/', [
     }
     try {
         // Get all the categories
-        category = await Category.find();
-        success = true;
+        let category = await Category.find();
+
 
         //Send the data
-        res.json({ category })
+        res.json(category)
 
         //Catches the error
     } catch (error) {
@@ -73,7 +70,7 @@ router.get('/', [
 // Get category with the id
 router.get('/:id', [
 ], async (req, res) => {
-
+    console.log("executing");
     // If there are errors return bad request and the errors
     const result = validationResult(req);
     if (!result.isEmpty()) {
@@ -81,12 +78,12 @@ router.get('/:id', [
     }
     try {
         let id = req.params.id;
-
+        console.log(id);
         // Get category with the id
         let category = await Category.findById(id);
 
         //Send the data
-        res.json({ category })
+        res.json(category)
 
         //Catches the error
     } catch (error) {
@@ -101,7 +98,6 @@ router.put('/:id', [
     body('parent_category_id', 'parent category id is not a valid ID').optional().isMongoId(),
     body('image', 'image must be a valid URL').isURL(),
 ], async (req, res) => {
-    console.log("Executing");
 
     // If there are errors return bad request and the errors
     const result = validationResult(req);
@@ -118,17 +114,17 @@ router.put('/:id', [
 
         //Check wheather the name already exists
         if (name) {
-            return res.status(400).json({ success, error: "sorry this name exist already" })
+            return res.status(400).json({ error: "sorry this name exist already" })
         }
         //Check wheather the slug already exists
         else if (slug) {
-            return res.status(400).json({ success, error: "sorry this slug exist already" })
+            return res.status(400).json({ error: "sorry this slug exist already" })
         }
         // Get category with the id
-        let category = await Category.updateOne({ _id: id }, { $set: { name: req.body.name, slug: req.body.slug, parent_category_id: req.body.parent_category_id, image: req.body.image } });
+        let category = await Category.findByIdAndUpdate({ _id: id }, { $set: { name: req.body.name, slug: req.body.slug, parent_category_id: req.body.parent_category_id, image: req.body.image } });
 
         //Send the data
-        res.json({ category })
+        res.json(category)
         //Catches the error
     } catch (error) {
         res.status(500).send("Internal server error");
@@ -144,14 +140,12 @@ router.delete('/:id', [
         return res.status(400).json({ errors: result.array() });
     }
     try {
-        let success = false;
         let id = req.params.id;
         // Get category with the id
         let category = await Category.findByIdAndDelete(id)
-        success = true;
         const message = "Category deleted successfully";
         //Send the data
-        res.json({ success, message })
+        res.json({ category, message })
         //Catches the error
     } catch (error) {
         res.status(500).send("Internal server error");
