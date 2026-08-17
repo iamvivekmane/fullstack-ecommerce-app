@@ -1,7 +1,7 @@
 const express = require('express');
 const User = require('../models/User');
 const router = express.Router()
-const { body, validationResult } = require('express-validator');
+const { body, validationResult, param } = require('express-validator');
 const Category = require('../models/Category');
 
 
@@ -69,8 +69,8 @@ router.get('/', [
 
 // Get category with the id
 router.get('/:id', [
+    param('id', 'id is not valid').isMongoId(),
 ], async (req, res) => {
-    console.log("executing");
     // If there are errors return bad request and the errors
     const result = validationResult(req);
     if (!result.isEmpty()) {
@@ -78,7 +78,6 @@ router.get('/:id', [
     }
     try {
         let id = req.params.id;
-        console.log(id);
         // Get category with the id
         let category = await Category.findById(id);
 
@@ -93,10 +92,11 @@ router.get('/:id', [
 
 // Update category with the id
 router.put('/:id', [
+    param('id', 'id is not valid').isMongoId(),
     body('name', 'name must be at least 3 characters').isLength({ min: 3 }),
     body('slug', 'slug must be at least 3 characters').isLength({ min: 3 }),
     body('parent_category_id', 'parent category id is not a valid ID').optional().isMongoId(),
-    body('image', 'image must be a valid URL').isURL(),
+    body('image', 'image must be a valid URL').isURL()
 ], async (req, res) => {
 
     // If there are errors return bad request and the errors
@@ -107,10 +107,8 @@ router.put('/:id', [
     try {
 
         let id = req.params.id;
-        console.log(req.body);
         let name = await Category.findOne({ name: req.body.name })
         let slug = await Category.findOne({ slug: req.body.slug });
-        console.log(id);
 
         //Check wheather the name already exists
         if (name) {
@@ -133,6 +131,7 @@ router.put('/:id', [
 
 // Delete category with the id
 router.delete('/:id', [
+    param('id', 'id is not valid').isMongoId(),
 ], async (req, res) => {
     // If there are errors return bad request and the errors
     const result = validationResult(req);
