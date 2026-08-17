@@ -6,16 +6,14 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const JWT_SECRET = process.env.JWT_SECRET
 const fetchuser = require('../middleware/fetchuser');
-const { findById } = require('../models/Order');
-
 
 // Route 1
-// Creating a user using POST : api/auth/signup : No login required
+// Creating a user using POST : api/auth/signup 
 router.post('/signup', [
     body('name', 'name is not valid').isLength({ min: 3 }),
     body('email', 'email is not valid').isEmail(),
     body('password', 'password must be atleast 5 characters').isLength({ min: 5 }),
-    body('phone', 'phone number is not valid').isLength({ min: 10 }),
+    body('phone', 'phone number is not valid').isMobilePhone(['en-IN']),
     body('address', 'address is not valid').isLength({ min: 3 }),
 
 ], async (req, res) => {
@@ -76,7 +74,6 @@ router.post('/signup', [
 router.post('/login', [
     body('email', 'email is not valid').isEmail(),
     body('password', 'password cannot be blank').exists()
-
 ], async (req, res) => {
     let success = false;
     // If there are errors return bad request and the errors
@@ -121,14 +118,13 @@ router.post('/login', [
 
 // Route 3
 // Get loggedin user details using POST : api/auth/getuser : login required
-router.post('/getuser', [
-    body('email', 'email is not valid').isEmail(),
-    body('password', 'password cannot be blank').exists()
-], fetchuser, async (req, res) => {
+router.get('/getuser', fetchuser, async (req, res) => {
     try {
-        userId = req.user.id;
+        let success = false;
+        const userId = req.user.id;
         const user = await User.findById(userId).select("-password");
-        res.send(user)
+        success = true;
+        res.json({ success, user })
     } catch (error) {
         res.status(500).send("Internal server error");
     }
