@@ -3,10 +3,11 @@ const User = require('../models/User');
 const router = express.Router()
 const { body, validationResult, param } = require('express-validator');
 const Category = require('../models/Category');
+const admin = require('../middleware/isadmin')
 
 
 // Create a new category 
-router.post('/', [
+router.post('/', admin, [
     body('name', 'name must be at least 3 characters').isLength({ min: 3 }),
     body('slug', 'slug must be at least 3 characters').isLength({ min: 3 }),
     body('parent_category_id', 'parent category id is not a valid ID').optional().isMongoId(),
