@@ -51,11 +51,14 @@ router.post('/signup', [
         });
         const data = {
             user: {
-                id: user.id
+                id: user.id,
+                role: user.role
             }
         }
         const createdUser = await User.findById(user.id);
         const authtoken = jwt.sign(data, JWT_SECRET)
+        console.log("the auth token is ", jwt.decode(authtoken));
+
         const role = createdUser.role;
         success = true;
 
@@ -96,11 +99,10 @@ router.post('/login', [
 
         const data = {
             user: {
-                id: user.id
+                id: user.id,
+                role: user.role
             }
         }
-
-
         const createdUser = await User.findById(user.id);
         const authtoken = jwt.sign(data, JWT_SECRET)
         const role = createdUser.role;
@@ -119,6 +121,7 @@ router.post('/login', [
 // Route 3
 // Get loggedin user details using POST : api/auth/getuser : login required
 router.get('/getuser', fetchuser, async (req, res) => {
+    console.log("executing");
     try {
         let success = false;
         const userId = req.user.id;
