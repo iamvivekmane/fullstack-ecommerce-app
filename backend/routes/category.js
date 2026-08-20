@@ -46,7 +46,7 @@ router.post('/', admin, [
 })
 
 // Get all the categories
-router.get('/', [
+router.get('/', admin, [
 ], async (req, res) => {
 
     // If there are errors return bad request and the errors
