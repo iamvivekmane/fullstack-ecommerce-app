@@ -8,8 +8,10 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const isUser = require('../middleware/isUser')
 const isAdmin = require('../middleware/isAdmin')
 
+
 // Route 1
 // Creating a user using POST : api/auth/signup 
+// No login required
 router.post('/signup', [
     body('name', 'name is not valid').isLength({ min: 3 }),
     body('email', 'email is not valid').isEmail(),
@@ -74,7 +76,8 @@ router.post('/signup', [
 
 
 // Route 2
-// Authenticate a user using POST : api/auth/login : No login required
+// Authenticate a user using POST : api/auth/login
+// No login required
 router.post('/login', [
     body('email', 'email is not valid').isEmail(),
     body('password', 'password cannot be blank').exists()
@@ -120,7 +123,8 @@ router.post('/login', [
 })
 
 // Route 3
-// Get loggedin user details using POST : api/auth/getuser : login required
+// Get loggedin user details using POST : api/auth/getuser 
+// User login required
 router.get('/getuser', isUser, async (req, res) => {
     console.log("executing");
     try {
