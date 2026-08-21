@@ -3,7 +3,7 @@ const User = require('../models/User');
 const router = express.Router()
 const { body, validationResult, param } = require('express-validator');
 const Category = require('../models/Category');
-const admin = require('../middleware/isadmin')
+const admin = require('../middleware/isAdmin')
 
 
 // Create a new category 

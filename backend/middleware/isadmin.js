@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const JWT_SECRET = process.env.JWT_SECRET
 
-const isadmin = (req, res, next) => {
+const isAdmin = (req, res, next) => {
     //Get user from JWT token and add id to the request object
     const token = req.header('auth-token')
     if (!token) {
@@ -20,4 +20,4 @@ const isadmin = (req, res, next) => {
     }
 
 }
-module.exports = isadmin;
+module.exports = isAdmin;

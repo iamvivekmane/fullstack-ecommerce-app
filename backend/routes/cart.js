@@ -5,7 +5,7 @@ const { body, validationResult } = require('express-validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const JWT_SECRET = process.env.JWT_SECRET
-const fetchuser = require('../middleware/fetchuser')
+const isUser = require('../middleware/isUser')
 
 
 // Route 1: Add items to the cart

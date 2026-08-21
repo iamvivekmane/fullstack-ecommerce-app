@@ -4,8 +4,9 @@ const router = express.Router()
 const { body, validationResult } = require('express-validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const JWT_SECRET = process.env.JWT_SECRET
-const fetchuser = require('../middleware/fetchuser');
+const JWT_SECRET = process.env.JWT_SECRET;
+const isUser = require('../middleware/isUser')
+const isAdmin = require('../middleware/isAdmin')
 
 // Route 1
 // Creating a user using POST : api/auth/signup 
@@ -120,7 +121,7 @@ router.post('/login', [
 
 // Route 3
 // Get loggedin user details using POST : api/auth/getuser : login required
-router.get('/getuser', fetchuser, async (req, res) => {
+router.get('/getuser', isUser, async (req, res) => {
     console.log("executing");
     try {
         let success = false;

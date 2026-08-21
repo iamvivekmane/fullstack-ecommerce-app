@@ -3,7 +3,7 @@ const Order = require('../models/Order');
 const router = express.Router()
 const { body, validationResult } = require('express-validator')
 const bcrypt = require('bcryptjs')
-const fetchuser = require('../middleware/fetchuser')
+const isUser = require('../middleware/isUser')
 
 
 // Route 1: Add an order
