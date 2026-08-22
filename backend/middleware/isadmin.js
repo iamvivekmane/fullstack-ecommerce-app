@@ -12,7 +12,7 @@ const isAdmin = (req, res, next) => {
         req.user = data.user
         req.role = data.user.role;
         if (req.role != 'admin') {
-            return res.status(401).send({ error: "Please authenticate admin token" })
+            return res.status(401).send({ error: "Please authenticate using a valid admin token" })
         }
         next();
     } catch (error) {
